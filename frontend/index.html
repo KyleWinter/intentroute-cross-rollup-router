@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntentRoute</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">SC6109 Option 6 Prototype</p>
+          <h1>IntentRoute</h1>
+          <p class="lede">
+            An explainable cross-rollup intent router that lets the user describe the outcome they
+            want while the system chooses the best destination environment based on fee, latency,
+            congestion, and predicted execution reliability.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#intent-form">Run Live Intent</a>
+            <a class="button ghost" href="/charts.html">Open Experiment Board</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <p class="card-label">Demo Arc</p>
+          <ul class="hero-list">
+            <li>User submits an outcome instead of manually choosing a chain</li>
+            <li>The router ranks three rollup-like environments with explainable scoring</li>
+            <li>The relayer simulation shows the execution lifecycle end to end</li>
+            <li>The experiment board compares dynamic routing against static baselines</li>
+          </ul>
+        </div>
+      </header>
+
+      <section class="story-strip" aria-label="Demo storyline">
+        <article class="story-card">
+          <p class="card-label">Step 1</p>
+          <h3>User Intent</h3>
+          <p>The user specifies the desired result, such as a transfer, instead of hand-picking a rollup.</p>
+        </article>
+        <article class="story-card">
+          <p class="card-label">Step 2</p>
+          <h3>Explainable Routing</h3>
+          <p>The router scores each destination on cost, latency, congestion, and execution reliability.</p>
+        </article>
+        <article class="story-card">
+          <p class="card-label">Step 3</p>
+          <h3>Measured Outcome</h3>
+          <p>The benchmark board shows where dynamic policies outperform fixed-chain baselines.</p>
+        </article>
+      </section>
+
+      <main class="grid">
+        <section class="panel form-panel">
+          <div class="panel-heading">
+            <h2>Create Intent</h2>
+            <p>Submit a high-level outcome and let the router choose the destination for you.</p>
+          </div>
+
+          <form id="intent-form">
+            <div class="field-grid">
+              <label>
+                <span>Intent Type</span>
+                <select name="intentType">
+                  <option value="transfer">transfer</option>
+                  <option value="transfer_and_execute">transfer_and_execute</option>
+                  <option value="swap">swap</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Preference</span>
+                <select name="preference">
+                  <option value="balanced">balanced</option>
+                  <option value="cheapest">cheapest</option>
+                  <option value="fastest">fastest</option>
+                  <option value="reliable">reliable</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Token In</span>
+                <select name="tokenIn">
+                  <option value="USDC">USDC</option>
+                  <option value="ETH">ETH</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Token Out</span>
+                <select name="tokenOut">
+                  <option value="USDC">USDC</option>
+                  <option value="ETH">ETH</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Amount</span>
+                <input name="amountIn" type="number" min="1" step="0.01" value="100" required />
+              </label>
+
+              <label>
+                <span>Min Amount Out</span>
+                <input name="minAmountOut" type="number" min="1" step="0.01" value="99" />
+              </label>
+
+              <label class="full-width">
+                <span>Recipient</span>
+                <input
+                  name="recipient"
+                  type="text"
+                  value="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                  required
+                />
+              </label>
+
+              <label>
+                <span>Scenario</span>
+                <select name="scenario">
+                  <option value="normal">normal</option>
+                  <option value="burst">burst</option>
+                  <option value="stress">stress</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Source Chain</span>
+                <input name="sourceChainId" type="number" value="9000" required />
+              </label>
+            </div>
+
+            <div class="button-row">
+              <button type="button" id="quote-button" class="button secondary">Preview Routes</button>
+              <button type="submit" class="button primary">Submit Intent</button>
+            </div>
+          </form>
+
+          <div id="form-feedback" class="feedback"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Execution Environments</h2>
+            <p>Three destination profiles simulate different cross-rollup trade-offs.</p>
+          </div>
+          <div id="environment-list" class="stack"></div>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-heading">
+            <h2>Route Evaluation</h2>
+            <p>Candidate routes, normalized utilities, and the selected destination.</p>
+          </div>
+          <div id="route-summary" class="summary-placeholder">
+            Run a preview or submit an intent to inspect ranked routes.
+          </div>
+          <div id="route-table-wrap"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Intent Timeline</h2>
+            <p>The simulated relayer lifecycle for the last submitted intent.</p>
+          </div>
+          <div id="timeline" class="summary-placeholder">No active intent yet.</div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Benchmark Snapshot</h2>
+            <p>A quick summary of the offline benchmark before you open the full experiment board.</p>
+          </div>
+          <div id="benchmark-summary" class="summary-placeholder">
+            Generate `data/benchmark-sample.json` to render a sample evaluation summary.
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

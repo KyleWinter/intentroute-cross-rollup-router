@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-05-23T04:25:04.089Z",
+  "scenario": "burst",
+  "scenarioLabel": "Bursty Congestion",
+  "workloadId": "mixed_orderflow",
+  "workloadLabel": "Mixed Order Flow",
+  "featuredExperiment": {
+    "scenario": "burst",
+    "workloadId": "mixed_orderflow",
+    "bestOverall": "cheapest"
+  },
+  "headline": "Featured experiment: Bursty Congestion / Mixed Order Flow",
+  "keyFindings": [
+    "fixed_cheap-rollup achieved the best average rank across the full matrix, indicating the strongest overall balance between route availability, completion rate, cost, and latency.",
+    "fixed_cheap-rollup minimized average fee, while fixed_fast-rollup delivered the lowest latency profile, highlighting the expected cost-speed trade-off.",
+    "reliable achieved the highest average completion rate, and dynamic policies won 6 of 12 experiment cells overall, especially normal/merchant_batches, normal/mixed_orderflow, burst/retail_payments, burst/strict_output_protection."
+  ],
+  "results": [
+    {
+      "policy": "cheapest",
+      "policyType": "dynamic",
+      "averageFeeUsd": 0.5908,
+      "averageLatencyMs": 8898,
+      "p95LatencyMs": 10080,
+      "successRate": 0.9167,
+      "validRouteRate": 1,
+      "compositeOperationalScore": 0.8859,
+      "benchmarkRank": 1,
+      "dominantEnvironment": "cheap-rollup"
+    },
+    {
+      "policy": "balanced",
+      "policyType": "dynamic",
+      "averageFeeUsd": 0.7248,
+      "averageLatencyMs": 7916,
+      "p95LatencyMs": 9940,
+      "successRate": 0.8889,
+      "validRouteRate": 1,
+      "compositeOperationalScore": 0.8248,
+      "benchmarkRank": 2,
+      "dominantEnvironment": "cheap-rollup"
+    },
+    {
+      "policy": "fixed_fast-rollup",
+      "policyType": "static",
+      "averageFeeUsd": 1.5828,
+      "averageLatencyMs": 2818,
+      "p95LatencyMs": 3223,
+      "successRate": 0.9444,
+      "validRouteRate": 1,
+      "compositeOperationalScore": 0.8051,
+      "benchmarkRank": 3,
+      "dominantEnvironment": "fast-rollup"
+    },
+    {
+      "policy": "fixed_cheap-rollup",
+      "policyType": "static",
+      "averageFeeUsd": 0.5949,
+      "averageLatencyMs": 8968,
+      "p95LatencyMs": 10344,
+      "successRate": 0.8333,
+      "validRouteRate": 1,
+      "compositeOperationalScore": 0.773,
+      "benchmarkRank": 4,
+      "dominantEnvironment": "cheap-rollup"
+    },
+    {
+      "policy": "fastest",
+      "policyType": "dynamic",
+      "averageFeeUsd": 1.5995,
+      "averageLatencyMs": 2831,
+      "p95LatencyMs": 3188,
+      "successRate": 0.9167,
+      "validRouteRate": 1,
+      "compositeOperationalScore": 0.7659,
+      "benchmarkRank": 5,
+      "dominantEnvironment": "fast-rollup"
+    },
+    {
+      "policy": "reliable",
+      "policyType": "dynamic",
+      "averageFeeUsd": 1.6106,
+      "averageLatencyMs": 2830,
+      "p95LatencyMs": 3412,
+      "successRate": 0.8611,
+      "validRouteRate": 1,
+      "compositeOperationalScore": 0.6884,
+      "benchmarkRank": 6,
+      "dominantEnvironment": "fast-rollup"
+    },
+    {
+      "policy": "fixed_congested-rollup",
+      "policyType": "static",
+      "averageFeeUsd": 1.1938,
+      "averageLatencyMs": 18087,
+      "p95LatencyMs": 20907,
+      "successRate": 0.6389,
+      "validRouteRate": 0.9722,
+      "compositeOperationalScore": 0.0817,
+      "benchmarkRank": 7,
+      "dominantEnvironment": "congested-rollup"
+    }
+  ]
+}

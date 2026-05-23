@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntentRoute Experiment Board</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="charts-body">
+    <div class="page-shell">
+      <header class="hero board-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">IntentRoute Experiment Board</p>
+          <h1>Scalability Evaluation</h1>
+          <p class="lede">
+            A demo-ready analytics view for comparing dynamic and static cross-rollup routing
+            strategies across multiple workloads and congestion regimes.
+          </p>
+          <div class="hero-actions">
+            <a class="button secondary" href="/">Back To Simulator</a>
+            <a class="button ghost" href="/api/benchmark-report">Open Markdown Report</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <p class="card-label">Presentation Angle</p>
+          <ul class="hero-list">
+            <li>Show the fixed-route baselines first, then compare adaptive policies against them</li>
+            <li>Use the winner matrix to explain when dynamic routing actually helps</li>
+            <li>Use the scatter plot to show the cost-latency-reliability trade-off clearly</li>
+            <li>Use the drilldown cards to justify one scenario-workload pair in detail</li>
+          </ul>
+        </div>
+      </header>
+
+      <main class="board-grid">
+        <section class="panel wide">
+          <div class="panel-heading">
+            <h2>How To Read This Board</h2>
+            <p>The board is designed to make your 10-minute demo and final presentation easier to narrate.</p>
+          </div>
+          <div class="primer-grid">
+            <article class="primer-card">
+              <p class="card-label">Static Baselines</p>
+              <h3>Pinned Routing</h3>
+              <p>These policies always use one destination environment, which makes them easy baselines for comparison.</p>
+            </article>
+            <article class="primer-card">
+              <p class="card-label">Dynamic Policies</p>
+              <h3>Adaptive Routing</h3>
+              <p>These policies can switch destinations based on workload, congestion, and the selected optimization target.</p>
+            </article>
+            <article class="primer-card">
+              <p class="card-label">Main Message</p>
+              <h3>Scalability Trade-off</h3>
+              <p>There is no single winner for every condition, which is exactly why intent-based routing matters.</p>
+            </article>
+          </div>
+          <div class="legend-band">
+            <span class="legend-chip"><span class="legend-swatch dynamic-dot"></span>Dynamic policy</span>
+            <span class="legend-chip"><span class="legend-swatch static-dot"></span>Static baseline</span>
+            <span class="legend-chip"><span class="mini-rollup fast-chip"></span>FastRollup</span>
+            <span class="legend-chip"><span class="mini-rollup cheap-chip"></span>CheapRollup</span>
+            <span class="legend-chip"><span class="mini-rollup congested-chip"></span>CongestedRollup</span>
+          </div>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-heading">
+            <h2>Global Findings</h2>
+            <p>High-level takeaways and top-level KPI cards for the full benchmark matrix.</p>
+          </div>
+          <div id="board-findings" class="summary-placeholder">Loading experiment findings...</div>
+          <div id="board-kpis" class="kpi-grid"></div>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-heading">
+            <h2>Aggregate Policy Ranking</h2>
+            <p>Average rank, completion profile, and efficiency metrics aggregated across all scenarios and workloads.</p>
+          </div>
+          <div id="aggregate-ranking" class="summary-placeholder">Loading aggregate policy ranking...</div>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-heading">
+            <h2>Dynamic Vs Static Winner Matrix</h2>
+            <p>Each cell shows the winner for one scenario-workload pair, which makes it easy to explain when dynamic routing helps.</p>
+          </div>
+          <div id="winner-matrix" class="summary-placeholder">Loading experiment matrix...</div>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-heading">
+            <h2>Experiment Drilldown</h2>
+            <p>Pick a scenario and workload, then inspect the cost-latency-completion trade-off in detail.</p>
+          </div>
+          <div class="controls-row">
+            <label>
+              <span>Scenario</span>
+              <select id="scenario-select"></select>
+            </label>
+            <label>
+              <span>Workload</span>
+              <select id="workload-select"></select>
+            </label>
+          </div>
+          <div id="experiment-context" class="summary-placeholder">Loading experiment context...</div>
+          <div id="experiment-highlights" class="kpi-grid"></div>
+          <div class="board-detail-grid">
+            <section class="panel nested-panel">
+              <div class="panel-heading compact-heading">
+                <h3>Policy Scatter Plot</h3>
+                <p>X-axis: average fee, Y-axis: p95 latency, bubble size: completion rate.</p>
+              </div>
+              <div id="scatter-wrap" class="summary-placeholder">Loading scatter plot...</div>
+            </section>
+            <section class="panel nested-panel">
+              <div class="panel-heading compact-heading">
+                <h3>Detailed Ranking</h3>
+                <p>Per-policy metric cards and route distribution split across rollup profiles.</p>
+              </div>
+              <div id="experiment-results" class="summary-placeholder">Loading detailed ranking...</div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/charts.js"></script>
+  </body>
+</html>

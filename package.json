@@ -1,0 +1,14 @@
+{
+  "name": "intent-route",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node backend/server.mjs",
+    "backend": "node backend/server.mjs",
+    "benchmark": "node experiments/run-benchmark.mjs",
+    "benchmark:sample": "node experiments/run-benchmark.mjs --write",
+    "forge:build": "node scripts/forge-local.mjs build",
+    "forge:test": "node scripts/forge-local.mjs test"
+  }
+}
