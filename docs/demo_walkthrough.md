@@ -1,6 +1,11 @@
 # IntentRoute 10-Minute Demo Walkthrough
 
-> A scripted walkthrough for the SC6109 Option 6 deliverable. Every section is tagged with the PDF Feature Requirement (`FR-x`) or Hint (`H-x`) it addresses, so a grader can verify coverage point-by-point.
+> A scripted walkthrough for the SC6109 Option 6 deliverable. Every section is tagged with the PDF Option 6 bullet it addresses, so a grader can verify coverage point-by-point.
+>
+> Tag legend:
+> - **Feature #N** — the Nth bullet under *Feature Requirements* in the PDF (5 total).
+> - **Hint H-N** — the Nth bullet under *Hints & Directions* (5 total).
+> - **PDF prose** — text that is not a numbered bullet (e.g. *Background & Problem Statement*).
 >
 > Total runtime: **10:00 ± 30 s**.
 >
@@ -28,7 +33,7 @@ Keep these handy in a side window for fast pivot:
 
 ## 1. Problem framing (**0:00 – 1:00**)
 
-> Maps to PDF *Background & Problem Statement* + *Project Summary*.
+> Maps to PDF prose: *Background & Problem Statement* + *Project Summary*.
 
 **Talking points (≈ 45 s):**
 
@@ -40,7 +45,7 @@ Keep these handy in a side window for fast pivot:
 
 ## 2. Architecture overview (**1:00 – 2:00**)
 
-> Maps to all five PDF Feature Requirements + Hint H2 ("combine ideas from account abstraction, intents, and modular blockchains").
+> Maps to all five PDF Feature Requirements (#1-#5) + Hint H-2 ("combine ideas from account abstraction, intents, and modular blockchains").
 
 **Talking points (≈ 50 s):**
 
@@ -52,7 +57,7 @@ Keep these handy in a side window for fast pivot:
 
 ## 3. Submit a live transfer intent (**2:00 – 3:30**)
 
-> Maps to FR-1 (intent creation), FR-4 (route discovery), FR-5 (route scoring), FR-6 (explainable decision), FR-9 (frontend tracking).
+> Maps to Feature #1 (intent interface), Feature #2 (routing layer), Feature #3 (cost / latency / congestion / success-probability criteria), Feature #4 (frontend showing route selection and execution status).
 
 **Form input** (mostly defaults):
 - Intent Type: `transfer`
@@ -67,7 +72,7 @@ Keep these handy in a side window for fast pivot:
 
 **Talking points (≈ 20 s)** while pointing at the candidates table:
 
-> All three candidates are scored. CheapRollup scores 0.86 by winning cost and congestion; FastRollup leads on latency and reliability; CongestedRollup trails on every axis. The router also returns 2-3 reasons for the winner — this is what PDF FR-6 calls *Explainable Decision Output*.
+> All three candidates are scored. CheapRollup scores 0.86 by winning cost and congestion; FastRollup leads on latency and reliability; CongestedRollup trails on every axis. The router also returns 2-3 reasons for the winner — explainability is our reading of Feature #3 ("include routing criteria such as cost, latency, congestion, or execution success probability") plus the analysis requirement in Feature #5.
 
 **Click *Submit Intent*.** Watch the timeline build live.
 
@@ -79,7 +84,7 @@ Keep these handy in a side window for fast pivot:
 
 ## 4. Custom weights and merchant path (**3:30 – 5:00**)
 
-> Maps to PDF Use Cases A/B and Hint H5 (scalability argument).
+> Maps to Feature #1 (intent interface — exercising the `transfer_and_execute` and `custom` preference paths) and Hint H-5 (scalability argument behind the routing).
 
 ### 4a. Custom weights (≈ 30 s)
 
@@ -106,7 +111,7 @@ Keep these handy in a side window for fast pivot:
 
 ## 5. Force-failure and refund (**5:00 – 6:00**)
 
-> Maps to FR-7 (lifecycle states `failed` / `refunded`) and NFR-6 (safety).
+> Maps to Feature #4 (execution status display, exercising the `failed → refunded` branch of the lifecycle).
 
 1. Switch *Intent Type* back to **transfer**.
 2. Set *Force Outcome* to **failure**.
@@ -126,7 +131,7 @@ escrowed → submitted → filled-destination → filled → failed → refunded
 
 ## 6. Experiment board and Pareto argument (**6:00 – 8:30**)
 
-> Maps to FR-11 (benchmark mode), FR-12 (reporting), Feature #5 (analyse scalability), Hint H5.
+> Maps to Feature #5 ("analyze how this architecture improves user scalability and system efficiency") + Hint H-5 ("the key is not only routing logic, but also the scalability argument behind it").
 
 Switch to Tab B (`/charts.html`).
 
@@ -154,7 +159,7 @@ Scroll to *Dynamic vs Static Winner Matrix*. Talking point:
 
 ## 7. ERC-4337 + test matrix (**8:30 – 9:30**)
 
-> Maps to Hint H2 + General Tip "regularly test".
+> Maps to Hint H-2 (combine ideas from account abstraction, intents, and modular blockchains) + General Tip "regularly test your work".
 
 In the IDE, open [SmartAccount.t.sol](../contracts/test/SmartAccount.t.sol). Show the two test names:
 - `testEntryPointExecutesSignedDepositIntent`
@@ -175,7 +180,7 @@ npm test             # → 24 tests passed
 
 ## 8. Trust, centralisation, close (**9:30 – 10:00**)
 
-> Maps to Hint H3 (trust assumptions), Hint H4 (centralisation risks), General Tip on the blockchain trilemma.
+> Maps to Hint H-3 ("explain where trust assumptions lie in the router or relayer"), Hint H-4 ("discuss whether intent routing creates new centralisation risks"), and the General Tip's call to address the Blockchain Trilemma.
 
 **Talking point (≈ 25 s):**
 
