@@ -196,7 +196,7 @@ Honest limitations of the analysis:
 
 1. **Simulated environments.** Congestion, latency, and failure are sampled from seeded distributions, not real Anvil or testnet traces. Mitigation: deterministic seeding makes results comparable across policies; the matrix structure (3 × 4) gives us many data points; the relative comparison is what we claim, not absolute numbers.
 2. **Single sample size per cell.** Each cell is one workload of seeded intents; we do not yet do confidence intervals. Bootstrapping over multiple seed roots is a P1 follow-up.
-3. **No real settlement gas.** The on-chain anchor exists but is not yet wired into the benchmark; fees are off-chain proxies. P1 follow-up tracked in [myfiles/待办事项.md](../myfiles/待办事项.md) (P1-3, P1-4).
+3. **No real settlement gas in the benchmark.** The on-chain path exists (see [architecture.md](architecture.md) and the on-chain mode in [README.md](../README.md)) and produces real gas numbers per intent, but the experiment matrix in this document is driven by the in-memory simulator. Wiring the benchmark runner through the on-chain client is a known follow-up.
 4. **Three rollups, not a realistic ecosystem.** The argument should hold a-fortiori with more environments because static policies face an even thinner chance of guessing right; but we have not demonstrated that empirically.
 5. **No adversarial workload.** A workload that specifically targets the router's blind spots (e.g., correlated bursts on all chains) is not yet in the matrix.
 
@@ -214,13 +214,11 @@ That is the scalability claim of the project, stated in a form the data supports
 
 ## 9. Future work
 
-Items already enumerated in [myfiles/待办事项.md](../myfiles/待办事项.md), repeated here for analysis-section completeness:
-
-- Wire the simulator to local Anvil chains and re-run the benchmark with real settlement gas (P1-3).
+- Pipe the benchmark runner through the on-chain client so the matrix reports real settlement gas rather than off-chain proxies.
 - Add confidence intervals via multi-seed re-runs.
 - Add adversarial workloads that correlate failures across environments.
 - Compare against an RFQ-style competitive solver baseline (closer to Across / CoW).
-- Discuss how ERC-4337 UserOperation batching could compound the user-access scalability gain on top of routing (P1-1).
+- Quantify how ERC-4337 UserOperation batching compounds the user-access scalability gain on top of routing (see [erc4337_integration.md](erc4337_integration.md)).
 
 ---
 

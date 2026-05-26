@@ -127,7 +127,7 @@ Net effect on the trilemma stance from §6 of [scalability_analysis.md](scalabil
 
 ## 5. What we did *not* claim or implement
 
-- We did not deploy the EntryPoint to all four local Anvil chains. The current onchain mode ([backend/lib/onchain-simulator.mjs](../backend/lib/onchain-simulator.mjs)) still uses the deployer key directly. Wiring it through the EntryPoint is mechanical (build a UserOp, call `handleOps`) and is logged as P2 in [待办事项.md](../myfiles/待办事项.md).
+- We did not deploy the EntryPoint to all four local Anvil chains. The current onchain mode ([backend/lib/onchain-simulator.mjs](../backend/lib/onchain-simulator.mjs)) still uses the deployer key directly. Wiring it through the EntryPoint is mechanical — build a UserOp, call `handleOps` — and is left as future work.
 - We did not implement paymasters. A paymaster would let a router operator subsidise users' gas to bootstrap order flow — an interesting governance / incentive design question that belongs in [trust_and_decentralization.md §4.3](trust_and_decentralization.md).
 - We did not enforce bundler-storage rules (ERC-4337 §6). Our minimal `validateUserOp` touches only the account's own storage, which already happens to satisfy the rule, but we did not run the validator.
 - We did not integrate ERC-7683 standardized intent fields. The `UserOperation.callData` carries an ad-hoc `IntentEscrow.depositIntent` call; mapping that to `OrderData` is straightforward but deferred.

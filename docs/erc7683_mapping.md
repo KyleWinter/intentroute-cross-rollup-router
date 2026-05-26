@@ -106,7 +106,7 @@ Moving from JSON-over-HTTP to signed `OrderData` would close three of the trust 
 3. **§4.1 Router chokepoint.** Anyone can implement `resolve(order)`; competing routers can offer quotes. The user picks the best one and signs it.
 
 What it does **not** close:
-- The escrow `onlyOwner` problem remains (still requires `refundAfterDeadline`; tracked in [待办事项 §6 Tier-1 #1](../myfiles/待办事项.md)).
+- The escrow `onlyOwner` problem remains. The mitigation is a one-line `refundAfterDeadline` that any caller can invoke once the intent has expired — see [trust_and_decentralization.md §6 Tier-1 #1](trust_and_decentralization.md#tier-1--implementable-inside-the-course-timeline-low-effort-high-pedagogical-value).
 - Cross-rollup data availability for the order JSON itself — handled in production by alt-mempools or shared sequencer networks.
 
 ---

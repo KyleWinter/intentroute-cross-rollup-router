@@ -172,7 +172,6 @@ Concrete, implementable changes ordered by effort vs trust gained.
 
 - Empirical scalability evidence: [scalability_analysis.md](scalability_analysis.md)
 - Requirements and lifecycle: [option6_requirements_plan.md](option6_requirements_plan.md)
-- Remaining work: [../myfiles/待办事项.md](../myfiles/待办事项.md)
 - Escrow implementation: [../contracts/src/IntentEscrow.sol](../contracts/src/IntentEscrow.sol)
 - Settlement registry implementation: [../contracts/src/SettlementRegistry.sol](../contracts/src/SettlementRegistry.sol)
 - Router and policy weights: [../backend/lib/router.mjs](../backend/lib/router.mjs)

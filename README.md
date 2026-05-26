@@ -62,7 +62,6 @@ scripts/
   run-tests.mjs         backend unit-test runner
   forge-local.mjs       wraps forge build/test with a local solc 0.7.4
 .github/workflows/ci.yml  three-job CI
-myfiles/                project notes (delivery log, todo board, demo script)
 ```
 
 ---
@@ -124,7 +123,7 @@ In on-chain mode the frontend's mode banner switches to green and the lifecycle 
 
 ### Demo
 
-See [myfiles/演示流程.md](myfiles/演示流程.md) for a precise 10-minute walkthrough mapped to each Option 6 Feature Requirement and Hint from the PDF spec.
+See [docs/demo_walkthrough.md](docs/demo_walkthrough.md) for a precise 10-minute walkthrough mapped to each Option 6 Feature Requirement and Hint from the PDF spec.
 
 ### Benchmark
 
@@ -161,11 +160,7 @@ The reasoning behind the project lives in `docs/` and is the primary deliverable
 - [erc4337_integration.md](docs/erc4337_integration.md) — why account abstraction and intents compose, what was shipped, what was deliberately omitted
 - [erc7683_mapping.md](docs/erc7683_mapping.md) — field-by-field mapping from our schema to the draft ERC-7683 cross-chain intent standard
 - [testnet_deployment.md](docs/testnet_deployment.md) — how to point the same scripts at Sepolia / Optimism Sepolia / Base Sepolia / Arbitrum Sepolia
-
-Demo & status notes for graders:
-- [myfiles/演示流程.md](myfiles/演示流程.md) — 10-minute demo script, every section tagged with its PDF Feature Requirement / Hint
-- [myfiles/项目说明.md](myfiles/项目说明.md) — Chinese project overview
-- [myfiles/待办事项.md](myfiles/待办事项.md) — gap analysis vs the SC6109 PDF, with delivery status per item
+- [demo_walkthrough.md](docs/demo_walkthrough.md) — 10-minute demo script, every section tagged with its PDF Feature Requirement / Hint
 
 ---
 

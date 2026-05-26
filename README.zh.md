@@ -62,7 +62,6 @@ scripts/
   run-tests.mjs         后端单元测试 runner
   forge-local.mjs       用本地 solc 0.7.4 包装 forge build/test
 .github/workflows/ci.yml  三 job 的 CI
-myfiles/                项目笔记（交付清单、待办板、演示脚本）
 ```
 
 ---
@@ -124,7 +123,7 @@ npm run chains:stop             # 拆 anvil
 
 ### 演示流程
 
-[myfiles/演示流程.md](myfiles/演示流程.md) 是一份精确到秒的 10 分钟演示脚本，每一节都标注它对应 PDF 里 Option 6 的哪条 Feature Requirement / Hint，方便评审者按打分点对照。
+[docs/demo_walkthrough.md](docs/demo_walkthrough.md) 是一份精确到秒的 10 分钟演示脚本，每一节都标注它对应 PDF 里 Option 6 的哪条 Feature Requirement / Hint，方便评审者按打分点对照。
 
 ### 跑基准
 
@@ -161,11 +160,7 @@ npm run forge:test     # 14 个 Foundry 测试，自动定位 solc 0.7.4
 - [erc4337_integration.md](docs/erc4337_integration.md) — Account Abstraction 与 Intent 为何互补、本项目实现了什么、刻意省略了什么
 - [erc7683_mapping.md](docs/erc7683_mapping.md) — 当前 schema 到草案 ERC-7683 跨链意图标准的逐字段映射
 - [testnet_deployment.md](docs/testnet_deployment.md) — 如何把同一套脚本指向 Sepolia / Optimism Sepolia / Base Sepolia / Arbitrum Sepolia
-
-评审用补充资料：
-- [myfiles/演示流程.md](myfiles/演示流程.md) — 精确到秒的 10 分钟演示脚本，每节都对照 PDF 的 Feature Requirement / Hint
-- [myfiles/项目说明.md](myfiles/项目说明.md) — 中文版项目说明
-- [myfiles/待办事项.md](myfiles/待办事项.md) — 对照 PDF 的差距分析与逐项交付状态
+- [demo_walkthrough.md](docs/demo_walkthrough.md) — 精确到秒的 10 分钟演示脚本，每节都对照 PDF 的 Feature Requirement / Hint
 
 ---
 
