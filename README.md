@@ -153,11 +153,14 @@ The benchmark + both test suites are wired into CI ([.github/workflows/ci.yml](.
 
 The reasoning behind the project lives in `docs/` and is the primary deliverable along with the code:
 
+- [architecture.md](docs/architecture.md) — system components, lifecycle sequences, trust surface (8 mermaid diagrams)
 - [option6_requirements_plan.md](docs/option6_requirements_plan.md) — original requirements analysis and project plan
 - [scalability_analysis.md](docs/scalability_analysis.md) — the empirical scalability claim, methodology, and four answered research questions
 - [trust_and_decentralization.md](docs/trust_and_decentralization.md) — five-actor trust model, six categorised assumptions, and a three-tier mitigation roadmap
+- [privacy_tradeoffs.md](docs/privacy_tradeoffs.md) — what the system leaks today, MEV / timing risks, four mitigation families with named references
 - [erc4337_integration.md](docs/erc4337_integration.md) — why account abstraction and intents compose, what was shipped, what was deliberately omitted
 - [erc7683_mapping.md](docs/erc7683_mapping.md) — field-by-field mapping from our schema to the draft ERC-7683 cross-chain intent standard
+- [testnet_deployment.md](docs/testnet_deployment.md) — how to point the same scripts at Sepolia / Optimism Sepolia / Base Sepolia / Arbitrum Sepolia
 
 Demo & status notes for graders:
 - [myfiles/演示流程.md](myfiles/演示流程.md) — 10-minute demo script, every section tagged with its PDF Feature Requirement / Hint

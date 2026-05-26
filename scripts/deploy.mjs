@@ -11,7 +11,7 @@
 // resolution for free.
 
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
@@ -25,15 +25,45 @@ const SOLC_PATH =
   join(homedir(), ".solc-select", "artifacts", "solc-0.7.4", "solc-0.7.4");
 
 // Anvil's first dev account. Public, well-known. Safe for local-only.
-const DEPLOYER_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-const DEPLOYER_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+// Override via DEPLOYER_KEY / DEPLOYER_ADDRESS env vars when deploying to a
+// real testnet (Sepolia etc). See docs/testnet_deployment.md.
+const DEPLOYER_KEY =
+  process.env.DEPLOYER_KEY ??
+  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const DEPLOYER_ADDRESS =
+  process.env.DEPLOYER_ADDRESS ?? "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
-const CHAINS = [
+// Default layout: four local Anvil chains. Override the whole layout by
+// pointing CHAINS_CONFIG_PATH at a JSON file with the same shape; this is
+// how Sepolia / Optimism Sepolia / Base Sepolia are wired in.
+const DEFAULT_CHAINS = [
   { id: "origin", chainId: 9000, port: 8545 },
   { id: "fast-rollup", chainId: 9101, port: 8546 },
   { id: "cheap-rollup", chainId: 9102, port: 8547 },
   { id: "congested-rollup", chainId: 9103, port: 8548 }
 ];
+
+const CHAINS = loadChainsConfig();
+
+function loadChainsConfig() {
+  const path = process.env.CHAINS_CONFIG_PATH;
+  if (!path) return DEFAULT_CHAINS;
+  const raw = readFileSync(path, "utf8");
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed) || parsed.length < 2) {
+    throw new Error(
+      `CHAINS_CONFIG_PATH=${path} must define an array of at least 2 chains (1 origin + ≥1 destination)`
+    );
+  }
+  for (const entry of parsed) {
+    if (!entry.id || !entry.chainId || (!entry.rpc && !entry.port)) {
+      throw new Error(
+        `chain entry must have { id, chainId, rpc | port }, got ${JSON.stringify(entry)}`
+      );
+    }
+  }
+  return parsed;
+}
 
 const TOKENS = [
   { symbol: "mUSDC", name: "Mock USDC", decimals: 6 },
@@ -57,7 +87,7 @@ async function main() {
 
   // Origin chain: tokens + registry + escrow.
   const origin = CHAINS[0];
-  const originRpc = rpcUrl(origin.port);
+  const originRpc = chainRpc(origin);
   await waitForChain(originRpc, origin.id);
 
   console.log(`\n[${origin.id}] deploying tokens, registry, escrow`);
@@ -103,7 +133,7 @@ async function main() {
 
   // Destination chains: tokens + vault.
   for (const chain of CHAINS.slice(1)) {
-    const rpc = rpcUrl(chain.port);
+    const rpc = chainRpc(chain);
     await waitForChain(rpc, chain.id);
 
     console.log(`\n[${chain.id}] deploying tokens and vault`);
@@ -163,8 +193,15 @@ async function main() {
   console.log(`\nDeployments written to ${outPath}`);
 }
 
-function rpcUrl(port) {
-  return `http://127.0.0.1:${port}`;
+function rpcUrl(portOrRpc) {
+  if (typeof portOrRpc === "string" && portOrRpc.startsWith("http")) {
+    return portOrRpc;
+  }
+  return `http://127.0.0.1:${portOrRpc}`;
+}
+
+function chainRpc(chain) {
+  return chain.rpc ?? rpcUrl(chain.port);
 }
 
 async function waitForChain(rpc, label, maxAttempts = 20) {

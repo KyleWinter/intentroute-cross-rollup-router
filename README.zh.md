@@ -153,11 +153,14 @@ npm run forge:test     # 14 个 Foundry 测试，自动定位 solc 0.7.4
 
 项目的"推理过程"都写在 `docs/` 下，这部分与代码同等重要：
 
+- [architecture.md](docs/architecture.md) — 系统组件、生命周期时序、信任面（8 张 mermaid 图）
 - [option6_requirements_plan.md](docs/option6_requirements_plan.md) — 最初的需求分析与项目计划
 - [scalability_analysis.md](docs/scalability_analysis.md) — 可扩展性论证、方法论、对 4 个研究问题的实证回答
 - [trust_and_decentralization.md](docs/trust_and_decentralization.md) — 5 actor 信任模型、6 类信任假设分级、3 Tier 缓解路线图
+- [privacy_tradeoffs.md](docs/privacy_tradeoffs.md) — 当前系统泄露什么、MEV / 时序风险、4 类缓解方案与对应参考系统
 - [erc4337_integration.md](docs/erc4337_integration.md) — Account Abstraction 与 Intent 为何互补、本项目实现了什么、刻意省略了什么
 - [erc7683_mapping.md](docs/erc7683_mapping.md) — 当前 schema 到草案 ERC-7683 跨链意图标准的逐字段映射
+- [testnet_deployment.md](docs/testnet_deployment.md) — 如何把同一套脚本指向 Sepolia / Optimism Sepolia / Base Sepolia / Arbitrum Sepolia
 
 评审用补充资料：
 - [myfiles/演示流程.md](myfiles/演示流程.md) — 精确到秒的 10 分钟演示脚本，每节都对照 PDF 的 Feature Requirement / Hint
