@@ -21,200 +21,246 @@
             congestion, and predicted execution reliability.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#intent-form">Run Live Intent</a>
+            <a class="button primary" href="#stage-submit">Run Live Intent</a>
             <a class="button ghost" href="/charts.html">Open Experiment Board</a>
           </div>
         </div>
         <div class="hero-card">
-          <p class="card-label">Demo Arc</p>
-          <ul class="hero-list">
-            <li>User submits an outcome instead of manually choosing a chain</li>
-            <li>The router ranks three rollup-like environments with explainable scoring</li>
-            <li>The relayer simulation shows the execution lifecycle end to end</li>
-            <li>The experiment board compares dynamic routing against static baselines</li>
-          </ul>
+          <p class="card-label">Four-stage demo arc</p>
+          <ol class="hero-stages">
+            <li><span>01</span> Describe the outcome you want</li>
+            <li><span>02</span> Inspect the router's ranked candidates</li>
+            <li><span>03</span> Watch the on-chain lifecycle</li>
+            <li><span>04</span> Compare against fixed-chain baselines</li>
+          </ol>
         </div>
       </header>
 
-      <section class="story-strip" aria-label="Demo storyline">
-        <article class="story-card">
-          <p class="card-label">Step 1</p>
-          <h3>User Intent</h3>
-          <p>The user specifies the desired result, such as a transfer, instead of hand-picking a rollup.</p>
-        </article>
-        <article class="story-card">
-          <p class="card-label">Step 2</p>
-          <h3>Explainable Routing</h3>
-          <p>The router scores each destination on cost, latency, congestion, and execution reliability.</p>
-        </article>
-        <article class="story-card">
-          <p class="card-label">Step 3</p>
-          <h3>Measured Outcome</h3>
-          <p>The benchmark board shows where dynamic policies outperform fixed-chain baselines.</p>
-        </article>
-      </section>
-
-      <main class="grid">
-        <section class="panel form-panel">
-          <div class="panel-heading">
-            <h2>Create Intent</h2>
-            <p>Submit a high-level outcome and let the router choose the destination for you.</p>
-          </div>
-
-          <form id="intent-form">
-            <div class="field-grid">
-              <label>
-                <span>Intent Type</span>
-                <select name="intentType">
-                  <option value="transfer">transfer</option>
-                  <option value="transfer_and_execute">transfer_and_execute</option>
-                  <option value="swap">swap</option>
-                </select>
-              </label>
-
-              <label>
-                <span>Preference</span>
-                <select name="preference" id="preference-select">
-                  <option value="balanced">balanced</option>
-                  <option value="cheapest">cheapest</option>
-                  <option value="fastest">fastest</option>
-                  <option value="reliable">reliable</option>
-                  <option value="custom">custom (set weights below)</option>
-                </select>
-              </label>
-
-              <label>
-                <span>Token In</span>
-                <select name="tokenIn">
-                  <option value="USDC">USDC</option>
-                  <option value="ETH">ETH</option>
-                </select>
-              </label>
-
-              <label>
-                <span>Token Out</span>
-                <select name="tokenOut">
-                  <option value="USDC">USDC</option>
-                  <option value="ETH">ETH</option>
-                </select>
-              </label>
-
-              <label>
-                <span>Amount</span>
-                <input name="amountIn" type="number" min="1" step="0.01" value="100" required />
-              </label>
-
-              <label>
-                <span>Min Amount Out</span>
-                <input name="minAmountOut" type="number" min="1" step="0.01" value="99" />
-              </label>
-
-              <label class="full-width">
-                <span>Recipient</span>
-                <input
-                  name="recipient"
-                  type="text"
-                  value="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-                  required
-                />
-              </label>
-
-              <label>
-                <span>Scenario</span>
-                <select name="scenario">
-                  <option value="normal">normal</option>
-                  <option value="burst">burst</option>
-                  <option value="stress">stress</option>
-                </select>
-              </label>
-
-              <label>
-                <span>Source Chain</span>
-                <input name="sourceChainId" type="number" value="9000" required />
-              </label>
-
-              <label>
-                <span>Force Outcome</span>
-                <select name="forceOutcome">
-                  <option value="auto">auto (driven by success probability)</option>
-                  <option value="success">force success</option>
-                  <option value="failure">force failure (refund path)</option>
-                </select>
-              </label>
-
-              <label>
-                <span>Execution Target (for transfer_and_execute)</span>
-                <input name="executionTarget" type="text" value="auto" placeholder="auto or 0x…" />
-              </label>
+      <main class="stages">
+        <!-- Stage 1 — Submit ----------------------------------------------- -->
+        <section id="stage-submit" class="stage stage-submit" aria-labelledby="stage-1-heading">
+          <header class="stage-header">
+            <span class="stage-number">01</span>
+            <div>
+              <p class="stage-eyebrow">Stage 01 · Input</p>
+              <h2 id="stage-1-heading">Submit your intent</h2>
+              <p class="stage-lead">
+                Describe the outcome you want — token, amount, recipient, preference. The router
+                does the rest. Default weights cover the four named presets; pick
+                <code>custom</code> to drive the multi-factor score by hand.
+              </p>
             </div>
+          </header>
 
-            <fieldset id="weights-fieldset" class="weights-fieldset hidden">
-              <legend>Custom Weights</legend>
-              <p class="subtle-note">Weights are renormalized to sum to 1 server-side.</p>
-              <div class="weights-grid">
-                <label>
-                  <span>Cost <output data-out="cost">0.25</output></span>
-                  <input type="range" name="weight-cost" min="0" max="1" step="0.05" value="0.25" />
-                </label>
-                <label>
-                  <span>Latency <output data-out="latency">0.25</output></span>
-                  <input type="range" name="weight-latency" min="0" max="1" step="0.05" value="0.25" />
-                </label>
-                <label>
-                  <span>Reliability <output data-out="reliability">0.25</output></span>
-                  <input type="range" name="weight-reliability" min="0" max="1" step="0.05" value="0.25" />
-                </label>
-                <label>
-                  <span>Congestion <output data-out="congestion">0.25</output></span>
-                  <input type="range" name="weight-congestion" min="0" max="1" step="0.05" value="0.25" />
-                </label>
+          <div class="stage-grid stage-grid-split">
+            <section class="panel form-panel">
+              <div class="panel-heading">
+                <h3 class="panel-title">Create Intent</h3>
+                <p>Outcome-shaped JSON, no chain selection required.</p>
               </div>
-            </fieldset>
 
-            <div class="button-row">
-              <button type="button" id="quote-button" class="button secondary">Preview Routes</button>
-              <button type="submit" class="button primary">Submit Intent</button>
+              <form id="intent-form">
+                <div class="field-grid">
+                  <label>
+                    <span>Intent Type</span>
+                    <select name="intentType">
+                      <option value="transfer">transfer</option>
+                      <option value="transfer_and_execute">transfer_and_execute</option>
+                      <option value="swap">swap</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span>Preference</span>
+                    <select name="preference" id="preference-select">
+                      <option value="balanced">balanced</option>
+                      <option value="cheapest">cheapest</option>
+                      <option value="fastest">fastest</option>
+                      <option value="reliable">reliable</option>
+                      <option value="custom">custom (set weights below)</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span>Token In</span>
+                    <select name="tokenIn">
+                      <option value="USDC">USDC</option>
+                      <option value="ETH">ETH</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span>Token Out</span>
+                    <select name="tokenOut">
+                      <option value="USDC">USDC</option>
+                      <option value="ETH">ETH</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span>Amount</span>
+                    <input name="amountIn" type="number" min="1" step="0.01" value="100" required />
+                  </label>
+
+                  <label>
+                    <span>Min Amount Out</span>
+                    <input name="minAmountOut" type="number" min="1" step="0.01" value="99" />
+                  </label>
+
+                  <label class="full-width">
+                    <span>Recipient</span>
+                    <input
+                      name="recipient"
+                      type="text"
+                      value="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    <span>Scenario</span>
+                    <select name="scenario">
+                      <option value="normal">normal</option>
+                      <option value="burst">burst</option>
+                      <option value="stress">stress</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span>Source Chain</span>
+                    <input name="sourceChainId" type="number" value="9000" required />
+                  </label>
+
+                  <label>
+                    <span>Force Outcome</span>
+                    <select name="forceOutcome">
+                      <option value="auto">auto (driven by success probability)</option>
+                      <option value="success">force success</option>
+                      <option value="failure">force failure (refund path)</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span>Execution Target (for transfer_and_execute)</span>
+                    <input name="executionTarget" type="text" value="auto" placeholder="auto or 0x…" />
+                  </label>
+                </div>
+
+                <fieldset id="weights-fieldset" class="weights-fieldset hidden">
+                  <legend>Custom Weights</legend>
+                  <p class="subtle-note">Weights are renormalized to sum to 1 server-side.</p>
+                  <div class="weights-grid">
+                    <label>
+                      <span>Cost <output data-out="cost">0.25</output></span>
+                      <input type="range" name="weight-cost" min="0" max="1" step="0.05" value="0.25" />
+                    </label>
+                    <label>
+                      <span>Latency <output data-out="latency">0.25</output></span>
+                      <input type="range" name="weight-latency" min="0" max="1" step="0.05" value="0.25" />
+                    </label>
+                    <label>
+                      <span>Reliability <output data-out="reliability">0.25</output></span>
+                      <input type="range" name="weight-reliability" min="0" max="1" step="0.05" value="0.25" />
+                    </label>
+                    <label>
+                      <span>Congestion <output data-out="congestion">0.25</output></span>
+                      <input type="range" name="weight-congestion" min="0" max="1" step="0.05" value="0.25" />
+                    </label>
+                  </div>
+                </fieldset>
+
+                <div class="button-row">
+                  <button type="button" id="quote-button" class="button secondary">Preview Routes</button>
+                  <button type="submit" class="button primary">Submit Intent</button>
+                </div>
+              </form>
+
+              <div id="form-feedback" class="feedback"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <h3 class="panel-title">Execution Environments</h3>
+                <p>Three destination profiles simulate different cross-rollup trade-offs.</p>
+              </div>
+              <div id="environment-list" class="stack"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Stage 2 — Route ------------------------------------------------ -->
+        <section class="stage stage-route" aria-labelledby="stage-2-heading">
+          <header class="stage-header">
+            <span class="stage-number">02</span>
+            <div>
+              <p class="stage-eyebrow">Stage 02 · Routing</p>
+              <h2 id="stage-2-heading">Routing decision</h2>
+              <p class="stage-lead">
+                Three candidates scored on cost, latency, congestion, and reliability. The winner
+                comes back with 2-3 reasons — your decision audit trail.
+              </p>
             </div>
-          </form>
+          </header>
 
-          <div id="form-feedback" class="feedback"></div>
+          <section class="panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">Route Evaluation</h3>
+              <p>Candidate routes, normalized utilities, and the selected destination.</p>
+            </div>
+            <div id="route-summary" class="summary-placeholder">
+              Run a preview or submit an intent to inspect ranked routes.
+            </div>
+            <div id="route-table-wrap"></div>
+          </section>
         </section>
 
-        <section class="panel">
-          <div class="panel-heading">
-            <h2>Execution Environments</h2>
-            <p>Three destination profiles simulate different cross-rollup trade-offs.</p>
-          </div>
-          <div id="environment-list" class="stack"></div>
+        <!-- Stage 3 — Execute ---------------------------------------------- -->
+        <section class="stage stage-execute" aria-labelledby="stage-3-heading">
+          <header class="stage-header">
+            <span class="stage-number">03</span>
+            <div>
+              <p class="stage-eyebrow">Stage 03 · Execution</p>
+              <h2 id="stage-3-heading">Execution lifecycle</h2>
+              <p class="stage-lead">
+                Escrow on origin → submit → vault fill on destination → settle, or
+                <code>failed → refunded</code>. In on-chain mode every step carries a real tx hash
+                and gas number.
+              </p>
+            </div>
+          </header>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">Intent Timeline</h3>
+              <p>The relayer lifecycle for the last submitted intent.</p>
+            </div>
+            <div id="timeline" class="summary-placeholder">No active intent yet.</div>
+          </section>
         </section>
 
-        <section class="panel wide">
-          <div class="panel-heading">
-            <h2>Route Evaluation</h2>
-            <p>Candidate routes, normalized utilities, and the selected destination.</p>
-          </div>
-          <div id="route-summary" class="summary-placeholder">
-            Run a preview or submit an intent to inspect ranked routes.
-          </div>
-          <div id="route-table-wrap"></div>
-        </section>
+        <!-- Stage 4 — Evaluate --------------------------------------------- -->
+        <section class="stage stage-evaluate" aria-labelledby="stage-4-heading">
+          <header class="stage-header">
+            <span class="stage-number">04</span>
+            <div>
+              <p class="stage-eyebrow">Stage 04 · Evaluation</p>
+              <h2 id="stage-4-heading">Empirical comparison</h2>
+              <p class="stage-lead">
+                How dynamic routing compares against fixed-chain baselines across 12 cells. The
+                full Pareto and winner-matrix views live on the experiment board.
+              </p>
+            </div>
+          </header>
 
-        <section class="panel">
-          <div class="panel-heading">
-            <h2>Intent Timeline</h2>
-            <p>The simulated relayer lifecycle for the last submitted intent.</p>
-          </div>
-          <div id="timeline" class="summary-placeholder">No active intent yet.</div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-heading">
-            <h2>Benchmark Snapshot</h2>
-            <p>A quick summary of the offline benchmark before you open the full experiment board.</p>
-          </div>
-          <div id="benchmark-summary" class="summary-placeholder">
-            Generate `data/benchmark-sample.json` to render a sample evaluation summary.
-          </div>
+          <section class="panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">Benchmark Snapshot</h3>
+              <p>Featured experiment summary before you open the full board.</p>
+            </div>
+            <div id="benchmark-summary" class="summary-placeholder">
+              Generate `data/benchmark-sample.json` to render a sample evaluation summary.
+            </div>
+          </section>
         </section>
       </main>
     </div>

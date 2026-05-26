@@ -254,14 +254,19 @@ function renderAggregateParetoChart() {
     .map((point, index) => {
       const cx = xScale(point.fee);
       const cy = yScale(point.latency);
-      const radius = 6 + (point.completion ?? 0) * 6;
+      const radius = 4 + (point.completion ?? 0) * 4;
       const onFrontier = pareto.has(index);
       const fill = point.type === "dynamic" ? "#6366f1" : "#f97316";
-      const opacity = onFrontier ? 0.95 : 0.4;
+      const opacity = onFrontier ? 0.95 : 0.45;
       const stroke = onFrontier ? "#1e1b4b" : "transparent";
+      const shortLabel = lookupShortPolicyLabel(point.name);
+      // Label above by default; flip below for points near the top edge so
+      // the text doesn't get cropped or overlap the chart title.
+      const labelAbove = cy > padding.top + 18;
+      const ty = labelAbove ? cy - radius - 6 : cy + radius + 12;
       return `<g>
-        <circle cx="${cx}" cy="${cy}" r="${radius}" fill="${fill}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="1.5"></circle>
-        <text x="${cx + radius + 4}" y="${cy + 4}" font-size="11" fill="#1e1b4b" font-family="ui-monospace, monospace">${point.name}</text>
+        <circle cx="${cx}" cy="${cy}" r="${radius}" fill="${fill}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="1.25"></circle>
+        <text x="${cx}" y="${ty}" font-size="10" fill="#1e1b4b" text-anchor="middle" font-family="ui-monospace, monospace">${shortLabel}</text>
       </g>`;
     })
     .join("");
@@ -453,14 +458,14 @@ function renderScatterPlot(experiment) {
         margin.top + innerHeight,
         margin.top
       );
-      const radius = 10 + result.completionRate * 16;
+      const radius = 5 + result.completionRate * 6;
       const tone = result.policyType === "dynamic" ? "var(--teal)" : "var(--copper)";
       const label = lookupShortPolicyLabel(result.policyLabel);
 
       return `
         <g class="scatter-point">
-          <circle cx="${x}" cy="${y}" r="${radius}" fill="${tone}" fill-opacity="0.22" stroke="${tone}" stroke-width="2"></circle>
-          <text x="${x}" y="${y - radius - 8}" text-anchor="middle" class="scatter-label">${label}</text>
+          <circle cx="${x}" cy="${y}" r="${radius}" fill="${tone}" fill-opacity="0.28" stroke="${tone}" stroke-width="1.5"></circle>
+          <text x="${x}" y="${y - radius - 5}" text-anchor="middle" class="scatter-label">${label}</text>
         </g>
       `;
     })
