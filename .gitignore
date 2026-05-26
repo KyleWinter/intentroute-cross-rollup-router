@@ -8,3 +8,6 @@ broadcast
 coverage
 *.log
 data/generated-*.json
+data/anvil/
+data/solc/
+myfiles/

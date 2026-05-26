@@ -28,6 +28,27 @@ contract DestinationVault {
     }
 
     function recordFill(bytes32 intentId, address token, address recipient, uint256 amount) external onlyOwner {
+        _doFill(intentId, token, recipient, amount);
+    }
+
+    // transfer_and_execute path: hand the funds over and then invoke `target`
+    // with the supplied payload. Reverts in `target` propagate as fill failure.
+    function recordFillAndExecute(
+        bytes32 intentId,
+        address token,
+        address recipient,
+        uint256 amount,
+        address target,
+        bytes calldata payload
+    ) external onlyOwner {
+        _doFill(intentId, token, recipient, amount);
+        if (target != address(0)) {
+            (bool ok, bytes memory data) = target.call(payload);
+            require(ok, _revertReason(data));
+        }
+    }
+
+    function _doFill(bytes32 intentId, address token, address recipient, uint256 amount) internal {
         require(fills[intentId].filledAt == 0, "ALREADY_FILLED");
         require(amount > 0, "INVALID_AMOUNT");
 
@@ -40,5 +61,15 @@ contract DestinationVault {
 
         require(MockERC20(token).transfer(recipient, amount), "TRANSFER_FAILED");
         emit IntentFilled(intentId, recipient, amount);
+    }
+
+    function _revertReason(bytes memory data) internal pure returns (string memory) {
+        if (data.length < 68) {
+            return "TARGET_CALL_REVERTED";
+        }
+        assembly {
+            data := add(data, 0x04)
+        }
+        return abi.decode(data, (string));
     }
 }

@@ -7,7 +7,8 @@ import { validateIntentPayload } from "./lib/intent-schema.mjs";
 import { listEnvironments } from "./lib/environments.mjs";
 import { quoteIntent } from "./lib/router.mjs";
 import { getIntent, listIntents, saveIntent } from "./lib/store.mjs";
-import { startExecutionSimulation } from "./lib/simulator.mjs";
+import { isOnChainMode, startExecutionSimulation } from "./lib/simulator.mjs";
+import { loadDeployments } from "./lib/chain-client.mjs";
 import { nowIso } from "./lib/utils.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -51,6 +52,22 @@ async function handleApiRequest(request, response, url) {
 
   if (request.method === "GET" && url.pathname === "/api/environments") {
     sendJson(response, 200, listEnvironments());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/mode") {
+    let deployments = null;
+    if (isOnChainMode()) {
+      try {
+        deployments = await loadDeployments();
+      } catch (_) {
+        deployments = null;
+      }
+    }
+    sendJson(response, 200, {
+      onChain: isOnChainMode(),
+      deployments
+    });
     return;
   }
 

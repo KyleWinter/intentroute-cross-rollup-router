@@ -22,7 +22,7 @@ export function quoteIntent(intent, options = {}) {
     };
   }
 
-  const weights = POLICY_WEIGHTS[preference] ?? POLICY_WEIGHTS.balanced;
+  const weights = resolveWeights(preference, intent.customWeights ?? options.customWeights);
   const scoredCandidates = scoreCandidates(validCandidates, weights);
   const selectedRoute = scoredCandidates[0];
 
@@ -35,6 +35,18 @@ export function quoteIntent(intent, options = {}) {
     ],
     selectedRoute
   };
+}
+
+function resolveWeights(preference, customWeights) {
+  if (preference === "custom" && customWeights) {
+    return {
+      cost: customWeights.cost,
+      latency: customWeights.latency,
+      reliability: customWeights.reliability,
+      congestion: customWeights.congestion
+    };
+  }
+  return POLICY_WEIGHTS[preference] ?? POLICY_WEIGHTS.balanced;
 }
 
 export function getPolicyNames() {

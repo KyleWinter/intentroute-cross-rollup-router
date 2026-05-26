@@ -11,6 +11,9 @@
       <header class="hero">
         <div class="hero-copy">
           <p class="eyebrow">SC6109 Option 6 Prototype</p>
+          <div id="mode-banner" class="mode-banner mode-banner-simulated">
+            Simulated lifecycle · start chains and deploy to switch on-chain
+          </div>
           <h1>IntentRoute</h1>
           <p class="lede">
             An explainable cross-rollup intent router that lets the user describe the outcome they
@@ -71,11 +74,12 @@
 
               <label>
                 <span>Preference</span>
-                <select name="preference">
+                <select name="preference" id="preference-select">
                   <option value="balanced">balanced</option>
                   <option value="cheapest">cheapest</option>
                   <option value="fastest">fastest</option>
                   <option value="reliable">reliable</option>
+                  <option value="custom">custom (set weights below)</option>
                 </select>
               </label>
 
@@ -128,7 +132,44 @@
                 <span>Source Chain</span>
                 <input name="sourceChainId" type="number" value="9000" required />
               </label>
+
+              <label>
+                <span>Force Outcome</span>
+                <select name="forceOutcome">
+                  <option value="auto">auto (driven by success probability)</option>
+                  <option value="success">force success</option>
+                  <option value="failure">force failure (refund path)</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Execution Target (for transfer_and_execute)</span>
+                <input name="executionTarget" type="text" value="auto" placeholder="auto or 0x…" />
+              </label>
             </div>
+
+            <fieldset id="weights-fieldset" class="weights-fieldset hidden">
+              <legend>Custom Weights</legend>
+              <p class="subtle-note">Weights are renormalized to sum to 1 server-side.</p>
+              <div class="weights-grid">
+                <label>
+                  <span>Cost <output data-out="cost">0.25</output></span>
+                  <input type="range" name="weight-cost" min="0" max="1" step="0.05" value="0.25" />
+                </label>
+                <label>
+                  <span>Latency <output data-out="latency">0.25</output></span>
+                  <input type="range" name="weight-latency" min="0" max="1" step="0.05" value="0.25" />
+                </label>
+                <label>
+                  <span>Reliability <output data-out="reliability">0.25</output></span>
+                  <input type="range" name="weight-reliability" min="0" max="1" step="0.05" value="0.25" />
+                </label>
+                <label>
+                  <span>Congestion <output data-out="congestion">0.25</output></span>
+                  <input type="range" name="weight-congestion" min="0" max="1" step="0.05" value="0.25" />
+                </label>
+              </div>
+            </fieldset>
 
             <div class="button-row">
               <button type="button" id="quote-button" class="button secondary">Preview Routes</button>

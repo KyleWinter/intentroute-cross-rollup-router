@@ -4,11 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start": "bash scripts/run-all.sh",
+    "start:simulated": "bash scripts/run-all.sh --simulated",
+    "stop": "bash scripts/run-all.sh --stop",
+    "doctor": "bash scripts/run-all.sh --doctor",
+    "install-solc": "bash scripts/run-all.sh --install-solc",
     "dev": "node backend/server.mjs",
     "backend": "node backend/server.mjs",
+    "backend:onchain": "ONCHAIN_MODE=1 node backend/server.mjs",
     "benchmark": "node experiments/run-benchmark.mjs",
     "benchmark:sample": "node experiments/run-benchmark.mjs --write",
     "forge:build": "node scripts/forge-local.mjs build",
-    "forge:test": "node scripts/forge-local.mjs test"
+    "forge:test": "node scripts/forge-local.mjs test",
+    "chains:start": "bash scripts/start-chains.sh",
+    "chains:stop": "bash scripts/stop-chains.sh",
+    "chains:deploy": "node scripts/deploy.mjs",
+    "test": "node scripts/run-tests.mjs"
   }
 }

@@ -1,6 +1,7 @@
 const findingsNode = document.querySelector("#board-findings");
 const kpisNode = document.querySelector("#board-kpis");
 const aggregateNode = document.querySelector("#aggregate-ranking");
+const aggregateParetoNode = document.querySelector("#aggregate-pareto");
 const winnerMatrixNode = document.querySelector("#winner-matrix");
 const scenarioSelect = document.querySelector("#scenario-select");
 const workloadSelect = document.querySelector("#workload-select");
@@ -38,6 +39,7 @@ async function bootstrap() {
 
     findingsNode.innerHTML = message;
     aggregateNode.innerHTML = message;
+    if (aggregateParetoNode) aggregateParetoNode.innerHTML = message;
     winnerMatrixNode.innerHTML = message;
     scatterWrap.innerHTML = message;
     experimentResultsNode.innerHTML = message;
@@ -81,6 +83,7 @@ function renderStaticBoard() {
   renderFindings();
   renderKpis();
   renderAggregateRanking();
+  renderAggregateParetoChart();
   renderWinnerMatrix();
 }
 
@@ -181,6 +184,127 @@ function renderAggregateRanking() {
           `;
         })
         .join("")}
+    </div>
+  `;
+}
+
+function renderAggregateParetoChart() {
+  if (!aggregateParetoNode) return;
+  const ranking = state.data.aggregatePolicyRanking ?? [];
+  if (ranking.length === 0) {
+    aggregateParetoNode.innerHTML = "<p class=\"subtle-note\">No aggregate ranking available.</p>";
+    return;
+  }
+
+  const points = ranking.map((policy) => ({
+    name: policy.policyLabel ?? policy.policy,
+    type: policy.policyType,
+    fee: policy.averageFeeUsd,
+    latency: policy.averageP95LatencyMs,
+    completion: policy.averageCompletionRate
+  }));
+
+  // Identify the Pareto frontier: a point (fee, latency) is Pareto-optimal if
+  // no other point has both ≤ fee and ≤ latency with at least one strictly <.
+  const pareto = new Set(
+    points
+      .map((point, index) => {
+        const dominated = points.some(
+          (other, otherIndex) =>
+            otherIndex !== index &&
+            other.fee <= point.fee &&
+            other.latency <= point.latency &&
+            (other.fee < point.fee || other.latency < point.latency)
+        );
+        return dominated ? null : index;
+      })
+      .filter((idx) => idx !== null)
+  );
+
+  const width = 720;
+  const height = 360;
+  const padding = { top: 24, right: 24, bottom: 48, left: 64 };
+  const fees = points.map((p) => p.fee);
+  const latencies = points.map((p) => p.latency);
+  const minFee = Math.min(...fees);
+  const maxFee = Math.max(...fees) * 1.05;
+  const minLat = Math.min(...latencies);
+  const maxLat = Math.max(...latencies) * 1.05;
+  const innerW = width - padding.left - padding.right;
+  const innerH = height - padding.top - padding.bottom;
+
+  const xScale = (fee) => padding.left + ((fee - minFee) / (maxFee - minFee || 1)) * innerW;
+  const yScale = (lat) => padding.top + innerH - ((lat - minLat) / (maxLat - minLat || 1)) * innerH;
+
+  const sortedFrontier = points
+    .map((point, index) => ({ ...point, _idx: index }))
+    .filter((point) => pareto.has(point._idx))
+    .sort((a, b) => a.fee - b.fee);
+
+  const frontierPath = sortedFrontier
+    .map((point, idx) => `${idx === 0 ? "M" : "L"} ${xScale(point.fee)} ${yScale(point.latency)}`)
+    .join(" ");
+
+  const xTicks = 5;
+  const yTicks = 4;
+  const xAxisTicks = Array.from({ length: xTicks + 1 }, (_, i) => minFee + ((maxFee - minFee) * i) / xTicks);
+  const yAxisTicks = Array.from({ length: yTicks + 1 }, (_, i) => minLat + ((maxLat - minLat) * i) / yTicks);
+
+  const dots = points
+    .map((point, index) => {
+      const cx = xScale(point.fee);
+      const cy = yScale(point.latency);
+      const radius = 6 + (point.completion ?? 0) * 6;
+      const onFrontier = pareto.has(index);
+      const fill = point.type === "dynamic" ? "#6366f1" : "#f97316";
+      const opacity = onFrontier ? 0.95 : 0.4;
+      const stroke = onFrontier ? "#1e1b4b" : "transparent";
+      return `<g>
+        <circle cx="${cx}" cy="${cy}" r="${radius}" fill="${fill}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="1.5"></circle>
+        <text x="${cx + radius + 4}" y="${cy + 4}" font-size="11" fill="#1e1b4b" font-family="ui-monospace, monospace">${point.name}</text>
+      </g>`;
+    })
+    .join("");
+
+  const xLabels = xAxisTicks
+    .map(
+      (value) =>
+        `<g>
+          <line x1="${xScale(value)}" x2="${xScale(value)}" y1="${padding.top + innerH}" y2="${padding.top + innerH + 6}" stroke="#cbd5e1"></line>
+          <text x="${xScale(value)}" y="${padding.top + innerH + 20}" text-anchor="middle" font-size="11" fill="#475569">$${value.toFixed(2)}</text>
+        </g>`
+    )
+    .join("");
+
+  const yLabels = yAxisTicks
+    .map(
+      (value) =>
+        `<g>
+          <line x1="${padding.left - 6}" x2="${padding.left}" y1="${yScale(value)}" y2="${yScale(value)}" stroke="#cbd5e1"></line>
+          <text x="${padding.left - 10}" y="${yScale(value) + 4}" text-anchor="end" font-size="11" fill="#475569">${Math.round(value).toLocaleString()} ms</text>
+        </g>`
+    )
+    .join("");
+
+  aggregateParetoNode.innerHTML = `
+    <div class="pareto-chart">
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Cost vs latency Pareto scatter">
+        <rect x="${padding.left}" y="${padding.top}" width="${innerW}" height="${innerH}" fill="rgba(99,102,241,0.04)" />
+        ${xLabels}
+        ${yLabels}
+        <line x1="${padding.left}" x2="${padding.left}" y1="${padding.top}" y2="${padding.top + innerH}" stroke="#94a3b8" />
+        <line x1="${padding.left}" x2="${padding.left + innerW}" y1="${padding.top + innerH}" y2="${padding.top + innerH}" stroke="#94a3b8" />
+        ${sortedFrontier.length > 1 ? `<path d="${frontierPath}" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="5,4" />` : ""}
+        ${dots}
+        <text x="${padding.left + innerW / 2}" y="${height - 8}" text-anchor="middle" font-size="12" fill="#1e1b4b">Average fee per intent (USD)</text>
+        <text x="14" y="${padding.top + innerH / 2}" text-anchor="middle" font-size="12" fill="#1e1b4b" transform="rotate(-90 14 ${padding.top + innerH / 2})">Average p95 latency (ms)</text>
+      </svg>
+      <div class="pareto-legend">
+        <span class="legend-chip"><span class="legend-swatch dynamic-dot"></span>Dynamic policy</span>
+        <span class="legend-chip"><span class="legend-swatch static-dot"></span>Static baseline</span>
+        <span class="legend-chip"><span class="pareto-line-swatch"></span>Pareto frontier (filled markers)</span>
+        <span class="legend-chip subtle-note">Marker radius ∝ completion rate</span>
+      </div>
     </div>
   `;
 }

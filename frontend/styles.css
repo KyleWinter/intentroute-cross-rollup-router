@@ -129,7 +129,7 @@ h2 {
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 32px;
 }
 
 .wide {
@@ -825,4 +825,216 @@ code {
   .result-metrics-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* On-chain mode banner and timeline tx receipts (P1-3 / P1-4) */
+.mode-banner {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.mode-banner-simulated {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4338ca;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+.mode-banner-onchain {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+}
+.mode-banner code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.75rem;
+}
+.timeline-item-onchain .timeline-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+}
+.chain-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+}
+.chain-tag {
+  background: rgba(79, 70, 229, 0.12);
+  color: #3730a3;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.tx-hash {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  background: rgba(15, 23, 42, 0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+.gas-tag {
+  color: #475569;
+}
+
+/* Custom-weight slider fieldset (P2-3) */
+.weights-fieldset {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem 0.6rem;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.04);
+}
+.weights-fieldset.hidden {
+  display: none;
+}
+.weights-fieldset legend {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #4338ca;
+  padding: 0 0.4rem;
+}
+.weights-fieldset .subtle-note {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  color: #475569;
+}
+.weights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 0.6rem 1rem;
+}
+.weights-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+}
+.weights-grid output {
+  font-variant-numeric: tabular-nums;
+  color: #1e1b4b;
+  font-weight: 600;
+}
+.weights-grid input[type="range"] {
+  accent-color: #6366f1;
+}
+
+/* Aggregate Pareto chart (P2-5) */
+.pareto-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.pareto-chart svg {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+}
+.pareto-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: #475569;
+}
+.pareto-line-swatch {
+  display: inline-block;
+  width: 28px;
+  height: 0;
+  border-top: 2px dashed #10b981;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+/* Section dividers inside the Route Evaluation + Timeline panels */
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 24px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(31, 36, 48, 0.12);
+}
+.section-header:first-child {
+  margin-top: 0;
+}
+.section-header-divider {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 2px dashed rgba(14, 124, 123, 0.32);
+}
+.section-eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0e7c7b;
+}
+.section-title {
+  font-family: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+  font-size: 1.05rem;
+  margin: 0;
+  color: #1f2430;
+}
+.section-title-warning {
+  color: #b45309;
+}
+
+/* Highlight the selected row in the candidate table more emphatically */
+.route-table tr.selected-row {
+  background: rgba(14, 124, 123, 0.14);
+  outline: 2px solid rgba(14, 124, 123, 0.35);
+  outline-offset: -2px;
+}
+.route-table tr.selected-row td:first-child {
+  position: relative;
+}
+.route-table tr.selected-row td:first-child::before {
+  content: "▶";
+  position: absolute;
+  left: -2px;
+  color: #0e7c7b;
+  font-size: 0.7rem;
+}
+
+/* Status pill in timeline header */
+.status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+.status-pill-success {
+  background: rgba(16, 185, 129, 0.18);
+  color: #047857;
+}
+.status-pill-warning {
+  background: rgba(244, 114, 56, 0.18);
+  color: #b45309;
+}
+.status-pill-progress {
+  background: rgba(99, 102, 241, 0.18);
+  color: #4338ca;
+}
+.status-pill-default {
+  background: rgba(31, 36, 48, 0.1);
+  color: #1f2430;
+}
+
+/* Slightly stronger card affordance for panels themselves */
+.panel {
+  position: relative;
+}
+.panel + .panel,
+.panel ~ .panel {
+  /* keep visual separation when panels stack on narrow screens */
 }

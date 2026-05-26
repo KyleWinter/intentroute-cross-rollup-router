@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  backend-tests:
+    name: Backend unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm test
+
+  benchmark:
+    name: Reproducible benchmark
+    runs-on: ubuntu-latest
+    needs: backend-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm run benchmark
+      - name: Confirm aggregate ranking file produced
+        run: |
+          test -f data/benchmark-sample.json || (echo "benchmark sample missing" && exit 1)
+
+  contracts:
+    name: Foundry contract tests
+    runs-on: ubuntu-latest
+    needs: backend-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+      - name: Pin solc 0.7.4 via svm
+        run: |
+          set -e
+          mkdir -p ~/.svm/0.7.4
+          curl -sSL "https://github.com/ethereum/solidity/releases/download/v0.7.4/solc-static-linux" -o ~/.svm/0.7.4/solc-0.7.4
+          chmod +x ~/.svm/0.7.4/solc-0.7.4
+          echo "LOCAL_SOLC_PATH=$HOME/.svm/0.7.4/solc-0.7.4" >> "$GITHUB_ENV"
+      - run: npm run forge:test

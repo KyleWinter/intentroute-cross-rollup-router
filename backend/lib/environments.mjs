@@ -7,6 +7,10 @@ export const ORIGIN_ENVIRONMENT = {
   role: "source"
 };
 
+// USDC/ETH reference price = 3000 across the system. Per-env swap rate jitters
+// simulate AMM depth differences: deeper pool ⇒ closer to reference.
+const REFERENCE_USDC_PER_ETH = 3000;
+
 export const DESTINATION_ENVIRONMENTS = [
   {
     id: "fast-rollup",
@@ -20,7 +24,10 @@ export const DESTINATION_ENVIRONMENTS = [
     baseSuccessProbability: 0.985,
     latencyPressure: 0.7,
     reliabilityPenalty: 0.06,
-    spreadBps: 8
+    spreadBps: 8,
+    // Mock AMM economics for swap intents: deepLiquidity reduces slippage.
+    swapPriceBias: 1.0,
+    deepLiquidity: 0.92
   },
   {
     id: "cheap-rollup",
@@ -34,7 +41,9 @@ export const DESTINATION_ENVIRONMENTS = [
     baseSuccessProbability: 0.955,
     latencyPressure: 1.1,
     reliabilityPenalty: 0.1,
-    spreadBps: 4
+    spreadBps: 4,
+    swapPriceBias: 0.985,
+    deepLiquidity: 0.75
   },
   {
     id: "congested-rollup",
@@ -48,9 +57,13 @@ export const DESTINATION_ENVIRONMENTS = [
     baseSuccessProbability: 0.9,
     latencyPressure: 1.35,
     reliabilityPenalty: 0.22,
-    spreadBps: 6
+    spreadBps: 6,
+    swapPriceBias: 0.97,
+    deepLiquidity: 0.5
   }
 ];
+
+export { REFERENCE_USDC_PER_ETH };
 
 export function listEnvironments() {
   return {
@@ -104,7 +117,10 @@ function buildRouteCandidate(intent, environment, scenario) {
   );
 
   const executionSpreadBps = environment.spreadBps + Math.round(congestionScore * 18);
-  const expectedAmountOut = round(amountIn * (1 - executionSpreadBps / 10000), 4);
+  const expectedAmountOut =
+    intent.intentType === "swap"
+      ? quoteSwapAmountOut(intent, environment, congestionScore, executionSpreadBps)
+      : round(amountIn * (1 - executionSpreadBps / 10000), 4);
   const invalidReasons = [];
 
   if (intent.intentType !== "swap" && intent.tokenIn !== intent.tokenOut) {
@@ -136,6 +152,25 @@ function buildRouteCandidate(intent, environment, scenario) {
     valid: invalidReasons.length === 0,
     invalidReasons
   };
+}
+
+function quoteSwapAmountOut(intent, environment, congestionScore, executionSpreadBps) {
+  // Direction: USDC → ETH divides by reference; ETH → USDC multiplies.
+  const rate = environment.swapPriceBias * REFERENCE_USDC_PER_ETH;
+  const slippageFromDepth = (1 - environment.deepLiquidity) * 0.04; // up to 4 % at thin depth
+  const slippageFromLoad = congestionScore * 0.03; // congestion eats into AMM quotes
+  const totalSlippage = slippageFromDepth + slippageFromLoad + executionSpreadBps / 10000;
+
+  let amountOut;
+  if (intent.tokenIn === "ETH" && intent.tokenOut === "USDC") {
+    amountOut = intent.amountIn * rate * (1 - totalSlippage);
+  } else if (intent.tokenIn === "USDC" && intent.tokenOut === "ETH") {
+    amountOut = (intent.amountIn / rate) * (1 - totalSlippage);
+  } else {
+    // Unsupported pair: leave amountOut at 0 so the candidate is invalidated.
+    amountOut = 0;
+  }
+  return round(amountOut, 6);
 }
 
 function getScenarioMultiplier(scenario, environmentId) {

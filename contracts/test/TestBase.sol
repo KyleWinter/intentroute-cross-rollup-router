@@ -4,6 +4,9 @@ pragma solidity ^0.7.4;
 interface Vm {
     function prank(address) external;
     function expectRevert(bytes calldata) external;
+    function sign(uint256 privateKey, bytes32 digest) external pure returns (uint8 v, bytes32 r, bytes32 s);
+    function addr(uint256 privateKey) external pure returns (address);
+    function deal(address to, uint256 give) external;
 }
 
 contract TestBase {
@@ -19,5 +22,11 @@ contract TestBase {
 
     function assertTrue(bool condition, string memory message) internal pure {
         require(condition, message);
+    }
+
+    function _chainId() internal pure returns (uint256 id) {
+        assembly {
+            id := chainid()
+        }
     }
 }
