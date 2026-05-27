@@ -408,7 +408,7 @@ function startPolling() {
     const data = await response.json();
     renderTimeline(data.events);
 
-    if (["settled", "failed", "refunded"].includes(data.status)) {
+    if (["settled", "refunded"].includes(data.status)) {
       clearInterval(pollHandle);
       pollHandle = null;
     }
